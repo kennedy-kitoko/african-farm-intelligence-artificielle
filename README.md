@@ -1,4 +1,4 @@
-# 🌿🤖 AGRO-IA OS: Agricultural AI for Tropical Africa
+# 🌿🤖 AGRO-IA OS: Agricultural AI for Africa
 
 <div align="center">
 
@@ -20,9 +20,9 @@
 ## 🎯 Mission: Autonomous Agricultural Intelligence for Africa
 
 ### Résumé
-Cette étude présente le fine-tuning spécialisé du modèle de langage Llama 3.1 8B pour l'assistance agricole en République Démocratique du Congo (RDC). Utilisant la technique Low-Rank Adaptation (LoRA) via Unsloth sur Google Colab, nous avons adapté le modèle avec un dataset de 901 paires question-réponse en français, couvrant les pratiques agricoles tropicales. Les résultats montrent une convergence efficace avec une réduction de la loss de 2.57 à 0.60 en 120 étapes d'entraînement, démontrant l'efficacité de l'adaptation de domaine pour les applications agricoles spécialisées.
+Cette étude présente le fine-tuning spécialisé du Grand Modèle de Langage (comme chatgpt) pour l'assistance agricole en République Démocratique du Congo (RDC). Utilisant la technique Low-Rank Adaptation (LoRA) via Unsloth sur Google Colab, nous avons adapté le modèle avec un dataset de 901 paires question-réponse en français, couvrant les pratiques agricoles tropicales. Les résultats montrent une convergence efficace en 120 étapes d'entraînement, démontrant l'efficacité de l'adaptation de domaine pour les applications agricoles spécialisées.
 
-### Mots-clés : Fine-tuning, LLM, Agriculture tropicale, LoRA, Adaptation de domaine, RDC
+### Mots-clés : Fine-tuning , Agriculture tropicale, LoRA, Adaptation de domaine, RDC
 
 ### 1. Introduction
 1.1 Contexte et Motivation
