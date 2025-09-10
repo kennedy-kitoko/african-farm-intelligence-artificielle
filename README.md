@@ -19,8 +19,6 @@
 
 ## 🎯 Mission: Autonomous Agricultural Intelligence for Africa
 
-### Ce dépôt contient le recalibrage (fine-tuning) du modèle Llama 3.1 (8B) à l’aide d’Unsloth sur un jeu de données agricoles personnalisé provenant de la République Démocratique du Congo (RDC).  L’objectif est de construire un assistant agricole expert (AGRO-IA), semblable à ChatGPT, capable de répondre aux questions des agriculteurs sur les cultures, les ravageurs, la gestion des sols, l’irrigation et les pratiques durables local.
-
 ### Résumé
 Cette étude présente le fine-tuning spécialisé du modèle de langage Llama 3.1 8B pour l'assistance agricole en République Démocratique du Congo (RDC). Utilisant la technique Low-Rank Adaptation (LoRA) via Unsloth sur Google Colab, nous avons adapté le modèle avec un dataset de 901 paires question-réponse en français, couvrant les pratiques agricoles tropicales. Les résultats montrent une convergence efficace avec une réduction de la loss de 2.57 à 0.60 en 120 étapes d'entraînement, démontrant l'efficacité de l'adaptation de domaine pour les applications agricoles spécialisées.
 Mots-clés : Fine-tuning, LLM, Agriculture tropicale, LoRA, Adaptation de domaine, RDC
