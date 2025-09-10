@@ -621,10 +621,11 @@ If you use Farm Zero-Ops in your research, please cite our work:
 ```
 
 #### APA Format
-```
 KITOKO MUYUNGA KENNEDY et al. (2025). Farm Zero-Ops: Revolutionary Agricultural AI for Tropical Africa. 
-GitHub repository. https://github.com/your-username/farm-zero-ops
+GitHub repository. https://github.com/kennedy-kitoko/african-farm-intelligence-artificielle/tree/main
+
 ```
+
 
 ### Acknowledgments
 - **Unsloth Team**: For 2x faster fine-tuning optimization
