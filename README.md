@@ -10,7 +10,7 @@
 
 **Fine-tuned LLMs (Llama 3.1→GPT-OSS) + Multi-AI Pipeline → 300K Q/R Dataset**  
 **Zero Cloud • Zero Subscription • Maximum Farmer Autonomy**
-        **kitoko muyunga kennedy **
+**kitoko muyunga kennedy**
 
 [📊 Research Paper](#research-paper) • [🚀 Quick Start](#quick-start) • [📱 Demo](#demo) • [🤝 Contributing](#contributing)
 
