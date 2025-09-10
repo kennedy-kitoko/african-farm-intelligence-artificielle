@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AGRO-IA - Assistant Expert Agricole RDC</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #1a3d29 0%, #0f2419 50%, #1a5233 100%);
+            color: #ffffff;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .leaf-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.05;
+            z-index: -1;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M50 10c-20 0-30 20-30 40s10 40 30 40c20-20 30-40 30-40s-10-40-30-40z" fill="white"/></svg>') repeat;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: rgba(26, 61, 41, 0.9);
+            backdrop-filter: blur(15px);
+            border-bottom: 2px solid rgba(76, 175, 80, 0.3);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+
+        .logo::before {
+            content: "🌾";
+            font-size: 2rem;
+            filter: drop-shadow(0 0 10px rgba(76, 175, 80, 0.5));
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: #ffffff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: #4CAF50;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #4CAF50;
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .hero {
+            margin-top: 80px;
+            padding: 4rem 0;
+            text-align: center;
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600"><defs><pattern id="plants" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="2" fill="rgba(76,175,80,0.1)"/><path d="M50 30c-10 0-15 10-15 20s5 20 15 20c10-10 15-20 15-20s-5-20-15-20z" fill="rgba(76,175,80,0.05)"/></pattern></defs><rect width="1000" height="600" fill="url(%23plants)"/></svg>');
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #4CAF50, #8BC34A, #CDDC39);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: #B8E6B8;
+            margin-bottom: 2rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .stat-card {
+            background: rgba(76, 175, 80, 0.1);
+            border: 1px solid rgba(76, 175, 80, 0.3);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(76, 175, 80, 0.2);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #4CAF50;
+            margin-bottom: 0.5rem;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(76, 175, 80, 0.4);
+        }
+
+        .section {
+            padding: 4rem 0;
+            margin: 2rem 0;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: #4CAF50;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .feature-card {
+            background: rgba(26, 61, 41, 0.8);
+            border: 1px solid rgba(76, 175, 80, 0.3);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #4CAF50, transparent);
+            transition: left 0.5s ease;
+        }
+
+        .feature-card:hover::before {
+            left: 100%;
+        }
+
+        .feature-card:hover {
+            transform: scale(1.02);
+            border-color: #4CAF50;
+            box-shadow: 0 15px 40px rgba(76, 175, 80, 0.2);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            filter: drop-shadow(0 0 10px rgba(76, 175, 80, 0.5));
+        }
+
+        .research-section {
+            background: rgba(26, 61, 41, 0.7);
+            border-radius: 20px;
+            padding: 3rem;
+            margin: 3rem 0;
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+
+        .methodology-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .method-item {
+            background: rgba(76, 175, 80, 0.1);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border-left: 4px solid #4CAF50;
+        }
+
+        .version-box {
+            background: rgba(76, 175, 80, 0.1);
+            border: 2px solid #4CAF50;
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 3rem 0;
+            text-align: center;
+        }
+
+        .version-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .roadmap-card {
+            background: rgba(76, 175, 80, 0.15);
+            border: 1px solid rgba(76, 175, 80, 0.4);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: left;
+        }
+
+        .objectives-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .objective-card {
+            background: rgba(76, 175, 80, 0.1);
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .github-link {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #4CAF50;
+            color: white;
+            padding: 15px;
+            border-radius: 50%;
+            text-decoration: none;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+            z-index: 1000;
+        }
+
+        .github-link:hover {
+            transform: scale(1.1);
+            box-shadow: 0 10px 25px rgba(76, 175, 80, 0.5);
+        }
+
+        footer {
+            background: rgba(15, 36, 25, 0.9);
+            text-align: center;
+            padding: 2rem;
+            border-top: 1px solid rgba(76, 175, 80, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .floating-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(76, 175, 80, 0.3);
+            border-radius: 50%;
+            animation: floatUp 15s infinite linear;
+        }
+
+        @keyframes floatUp {
+            from {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 1;
+            }
+            to {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+
+                /* Survol des liens : effet plus lisible */
+        .nav-links a {
+            position: relative;
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color .3s ease;
+        }
+        .nav-links a:hover {
+            color: #8BC34A;
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #8BC34A;
+            transition: width .3s ease;
+        }
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="leaf-bg"></div>
+    <div class="floating-particles" id="particles"></div>
+
+    <header>
+        <nav class="container" style="display:flex;align-items:center;justify-content:space-between;padding:1rem 0;">
+            <!-- Logo plus grand et cliquable -->
+            <a href="#accueil" class="logo" style="display:flex;align-items:center;gap:12px;font-size:2rem;font-weight:800;color:#4CAF50;text-decoration:none;letter-spacing:.5px;">
+                <span style="font-size:2.4rem;filter:drop-shadow(0 0 8px rgba(76,175,80,.6));"></span>AGRO-IA
+            </a>
+    
+            <!-- Navigation fluide centrée -->
+            <ul class="nav-links" style="display:flex;gap:2.5rem;list-style:none;margin:0;padding:0;">
+                <li><a href="#accueil">Accueil</a></li>
+                <li><a href="#agro-ia">AGRO-IA</a></li>
+                <li><a href="#recherche">Recherche</a></li>
+                <li><a href="#roadmap">Roadmap</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+    
+            <!-- Bouton CTA visible dès le header -->
+            <a href="#agro-ia" class="cta-button" style="padding:.75rem 1.5rem;font-size:1rem;">Essayer AGRO-IA</a>
+        </nav>
+    </header>
+
+    <section class="hero" id="accueil">
+        <div class="container">
+            <h1>AGRO-IA : Assistant Expert Agricole</h1>
+            <p class="hero-subtitle">
+                Démocratisons l’accès aux connaissances agricoles avec AGRO-IA : un Grand Modèle de Langage façon ChatGPT, mais entièrement spécialisé pour l’agriculture congolaise.
+                Il répond aux questions des agriculteurs sur les cultures, les parasites, la gestion des sols, l’irrigation et les pratiques durables, en s’adaptant aux réalités locales de la RDC.
+                Grâce à son entraînement sur des données agricoles locales, elle centralise les pratiques, les besoins et les connaissances liées aux terres congolaises, offrant un outil de référence pour améliorer la productivité et moderniser le secteur agricole.
+            </p>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">40%</div>
+                    <p>du PIB RDC (Agriculture)</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">70%</div>
+                    <p>Population Active Employée</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">901</div>
+                    <p>Paires Q/R Dataset Multi-IA</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">8.8/10</div>
+                    <p>Précision Agricole</p>
+                </div>
+            </div>
+
+            <a href="#agro-ia" class="cta-button">🌾 Découvrir AGRO-IA</a>
+        </div>
+    </section>
+
+    <section class="section" id="agro-ia">
+        <div class="container">
+            <img src="img.png" alt="AGRO-IA" class="agro-ia-image" style="display:block;width:120%;max-width:1200px;height:auto;margin:0 auto 3rem;border-radius:20px;box-shadow:0 15px 60px rgba(0,0,0,.4);">            
+            <div class="version-box">
+                <h3 style="color: #4CAF50; font-size: 1.8rem; margin-bottom: 1rem;">📍 Version Actuelle: v1.0 "Manioc" 🌱</h3>
+                <div class="version-grid">
+                    <div><strong>Base:</strong> Llama 3.1 8B Instruct</div>
+                    <div><strong>Dataset:</strong> 901 paires Q/R RDC</div>
+                    <div><strong>Performance:</strong> 72% réduction loss</div>
+                    <div><strong>Précision:</strong> 8.8/10 agricole</div>
+                </div>
+                <p style="color: #B8E6B8; margin-top: 1rem; font-size: 1.1rem;">Sortie: 10 septembre 2025</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3>Assistant IA Spécialisé</h3>
+                    <p>AGRO-IA fonctionne comme ChatGPT mais spécialisé agriculture : répond aux questions des agriculteurs sur cultures, parasites, gestion des sols, irrigation et pratiques durables.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🌍</div>
+                    <h3>Dataset Multi-IA Collaboratif</h3>
+                    <p>901 Q/R construites via <strong>Kimi, DeepSeek, Claude, Grok, ChatGPT, Gwen & Co</strong> exploitant Internet pour agréger connaissances agricoles congolaises.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">📈</div>
+                    <h3>Impact Économique Massif RDC</h3>
+                    <p>Agriculture = <strong>40% PIB</strong> et <strong>70% population active</strong>. Démocratisation expertise agricole spécialisée pour zones rurales isolées de la RDC.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Fine-tuning LoRA Efficace</h3>
+                    <p>Technique Low-Rank Adaptation sur Unsloth/Google Colab. Convergence efficace en 120 étapes, adaptation de domaine pour applications agricoles spécialisées.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🔬</div>
+                    <h3>Projet #AgroAI #FarmZeroOps</h3>
+                    <p>Socle de connaissances spécialisées sur pratiques agricoles congolaises. Corpus agricole pertinent structuré pour adaptation du modèle.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Objectif : Démocratisation</h3>
+                    <p>Rendre l'expertise agricole accessible partout en RDC. Conseils et recommandations adaptés aux réalités locales tropicales congolaises.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="research-section" id="recherche">
+        <div class="container">
+            <h2 class="section-title">🔬 Recherche & Méthodologie</h2>
+            
+            <div class="methodology-grid">
+                <div class="method-item">
+                    <h4>🏗️ Architecture Modèle</h4>
+                    <p><strong>Meta-Llama-3.1-8B-Instruct</strong><br>
+                    Fine-tuning spécialisé d'un Grand Modèle de Langage pour assistance agricole RDC</p>
+                </div>
+                
+                <div class="method-item">
+                    <h4>⚙️ Configuration LoRA</h4>
+                    <p><strong>Low-Rank Adaptation :</strong><br>
+                    Via Unsloth sur Google Colab, optimisation mémoire et convergence efficace</p>
+                </div>
+                
+                <div class="method-item">
+                    <h4>📊 Dataset Multi-IA</h4>
+                    <p><strong>901 paires Q/R français :</strong><br>
+                    Agrégation Kimi + DeepSeek + Claude + Grok + ChatGPT + Gwen exploitant Internet</p>
+                </div>
+                
+                <div class="method-item">
+                    <h4>🚀 Infrastructure Collaborative</h4>
+                    <p><strong>Ressources collectées :</strong><br>
+                    Extraction et agrégation informations, structuration corpus agricole congolais</p>
+                </div>
+            </div>
+
+            <h3 style="color: #4CAF50; text-align: center; margin: 2rem 0;">🎯 Résultats de Performance</h3>
+            <div style="text-align: center; background: rgba(76, 175, 80, 0.1); padding: 2rem; border-radius: 15px;">
+                <p style="font-size: 1.2rem; margin-bottom: 1rem;">
+                    <strong>Convergence efficace en 120 étapes d'entraînement</strong>
+                </p>
+                <p style="font-size: 1.1rem; color: #B8E6B8;">
+                    Démonstration de la pertinence de l'adaptation au domaine pour applications agricoles spécialisées
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="roadmap">
+        <div class="container">
+            <h2 class="section-title">🚀 Roadmap AGRO-IA 2025-2026</h2>
+            
+            <div class="features-grid">
+                <div class="roadmap-card">
+                    <div class="feature-icon">🌽</div>
+                    <h3>v2.0 "Maïs" - Q2 2025</h3>
+                    <p><strong>Base Model:</strong> GPT-OSS-20B</p>
+                    <p><strong>Training Data:</strong> 50,000 paires Q/R validées</p>
+                    <p><strong>Languages:</strong> French + Lingala + Swahili</p>
+                    <p><strong>Features:</strong> Pipeline validation Multi-IA intégration</p>
+                    <p><strong>Performance Target:</strong> o3-mini équivalent</p>
+                </div>
+                
+                <div class="roadmap-card">
+                    <div class="feature-icon">🌳</div>
+                    <h3>v3.0 "Baobab" - Q4 2025</h3>
+                    <p><strong>Base Model:</strong> GPT-OSS-120B</p>
+                    <p><strong>Training Data:</strong> 100,000+ paires Q/R validées</p>
+                    <p><strong>Languages:</strong> 8+ langues africaines</p>
+                    <p><strong>Features:</strong> Intégration RAG, données temps réel</p>
+                    <p><strong>Performance Target:</strong> GPT-4o équivalent</p>
+                </div>
+                
+                <div class="roadmap-card">
+                    <div class="feature-icon">🏔️</div>
+                    <h3>v4.0 "Kilimanjaro" - 2026</h3>
+                    <p><strong>Architecture:</strong> Hybride RAG + Fine-tuned LLM</p>
+                    <p><strong>Coverage:</strong> 20+ pays africains</p>
+                    <p><strong>Languages:</strong> 15+ langues africaines</p>
+                    <p><strong>Features:</strong> Intégration IoT, analyses prédictives</p>
+                    <p><strong>Performance Target:</strong> Niveau expert agricole spécialisé</p>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin: 4rem 0;">
+                <div style="background: linear-gradient(135deg, rgba(76, 175, 80, 0.2), rgba(139, 195, 74, 0.1)); border: 2px solid #4CAF50; border-radius: 25px; padding: 3rem;">
+                    <h3 style="color: #4CAF50; font-size: 2.2rem; margin-bottom: 1.5rem;">
+                        🎯 Objectif #AgroAI #FarmZeroOps
+                    </h3>
+                    <p style="font-size: 1.3rem; color: #ffffff; margin-bottom: 2rem;">
+                        <strong>Développer et adapter un Grand Modèle de Langage (LLM)</strong><br>
+                        Pour répondre aux besoins spécifiques de l'agriculture en République Démocratique du Congo
+                    </p>
+                    <div class="objectives-grid">
+                        <div class="objective-card">
+                            <div style="font-size: 2rem; color: #4CAF50; margin-bottom: 0.5rem;">🌾</div>
+                            <strong>Cultures</strong><br>
+                            Maïs, manioc, riz, haricots
+                        </div>
+                        <div class="objective-card">
+                            <div style="font-size: 2rem; color: #4CAF50; margin-bottom: 0.5rem;">🐛</div>
+                            <strong>Parasites</strong><br>
+                            Détection et traitement
+                        </div>
+                        <div class="objective-card">
+                            <div style="font-size: 2rem; color: #4CAF50; margin-bottom: 0.5rem;">💧</div>
+                            <strong>Irrigation</strong><br>
+                            Gestion optimale de l'eau
+                        </div>
+                        <div class="objective-card">
+                            <div style="font-size: 2rem; color: #4CAF50; margin-bottom: 0.5rem;">♻️</div>
+                            <strong>Durabilité</strong><br>
+                            Pratiques écologiques
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin: 3rem 0;">
+                <h3 style="color: #4CAF50; font-size: 2rem; margin-bottom: 1rem;">
+                    "Démocratiser l'expertise agricole pour 70% de la population active RDC" 🌍🌱🤖
+                </h3>
+                <p style="font-size: 1.2rem; color: #B8E6B8;">
+                    AGRO-IA : Assistant expert comme ChatGPT, accessible et adapté aux réalités agricoles tropicales congolaises
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <footer id="contact">
+        <div class="container">
+            <h3>🤝 Rejoignez le Projet AGRO-IA</h3>
+            <p>Contribuez à la démocratisation de l'expertise agricole en République Démocratique du Congo</p>
+            <p style="margin-top: 1rem; color: #4CAF50;">
+                #AgroAI #FarmZeroOps - Fine-tuning LoRA, Agriculture tropicale, Adaptation de domaine, RDC
+            </p>
+            <p style="margin-top: 2rem; font-size: 0.9rem; opacity: 0.7;">
+                © 2025 AGRO-IA Assistant Expert Agricole - Recherche Open Source
+            </p>
+            <p>KITOKO MUYUNGA KENNEDY twitter: @kennedykitoko13</p>
+
+        </div>
+    </footer>
+
+    <a href="https://github.com/kennedy-kitoko/african-farm-intelligence-artificielle" 
+       class="github-link" 
+       target="_blank" 
+       title="Code Open Source sur GitHub">
+        <span style="font-family: monospace;">⚡</span>
+    </a>
+
+    <script>
+        // Création de particules flottantes
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            
+            setInterval(() => {
+                if (document.querySelectorAll('.particle').length < 15) {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    
+                    const size = Math.random() * 8 + 2;
+                    particle.style.width = size + 'px';
+                    particle.style.height = size + 'px';
+                    particle.style.left = Math.random() * 100 + '%';
+                    particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                    
+                    particlesContainer.appendChild(particle);
+                    
+                    setTimeout(() => {
+                        if (particle.parentNode) {
+                            particle.parentNode.removeChild(particle);
+                        }
+                    }, 15000);
+                }
+            }, 1000);
+        }
+
+        // Scroll fluide pour les liens de navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Header transparent au scroll
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(26, 61, 41, 0.95)';
+            } else {
+                header.style.background = 'rgba(26, 61, 41, 0.9)';
+            }
+        });
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', () => {
+            createParticles();
+            
+            // Animation d'entrée pour les cartes
+            const cards = document.querySelectorAll('.feature-card, .stat-card, .roadmap-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                setTimeout(() => {
+                    card.style.transition = 'all 0.8s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+    </script>
+</body>
+</html>
