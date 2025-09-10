@@ -18,6 +18,15 @@
 ---
 
 ## 🎯 Mission: Autonomous Agricultural Intelligence for Africa
+#This repository contains the fine-tuning of Llama 3.1 (8B) using Unsloth on a custom agricultural dataset from the Democratic Republic of Congo (DRC).
+The objective is to build an agricultural expert assistant (AGRO-IA) like CHAT-GPT capable of answering farmers’ questions about crops, pests, soil management, irrigation, and sustainable practices.
+
+###🌿🤖 Journée ONE AGRO-IA : le cerveau de Farm Zero-Ops - un LLM agricole , alimenté par les données et la pratique agricole moderne  de la ferme pour la prise de décision, le conseil, la gestion de la ferme. 
+un expert agronome dans un écosystème d'IA, L'ensemble de données d'entrainement a été construit par Kimi, DeepSeek, Claude, Grok, chatgpt, gwen &amp; Co qui récoltent Internet pour forger et récupérer des informations afin de former un ensemble de données de terrain robuste , il devient un agronome expert, gestionnaire de parcelle et décideur autonome - arrosant, traitant, vendant - transformant chaque champ en un organisme vivant, sans cloud, sans abonnement, zéro complexité. #AgroAI #FarmZeroOps. 
+
+
+This repository contains the fine-tuning of Llama 3.1 (8B) using Unsloth on a custom agricultural dataset from the Democratic Republic of Congo (DRC).
+The objective is to build an agricultural expert assistant (AGRO-IA) like CHAT-GPT capable of answering farmers’ questions about crops, pests, soil management, irrigation, and sustainable practices.
 
 Farm Zero-Ops revolutionizes tropical agriculture through **decentralized AI**, eliminating dependency on cloud services and expensive subscriptions. Our mission: equip every African farmer with world-class agricultural expertise, locally deployed and culturally adapted.
 
@@ -91,7 +100,7 @@ https://colab.research.google.com/drive/1Ys44kVvmeZtnICzWz0xgpRnrIOjZAuxp?usp=sh
 ### Option 2: Local Setup
 ```bash
 # Clone repository
-git clone https://github.com/your-username/farm-zero-ops.git
+git clone https://github.com/kennedy-kitoko/african-farm-intelligence-artificielle.git
 
 
 # Install Unsloth for 2x faster training
@@ -565,9 +574,9 @@ All contributors will be:
 ## 📞 Support & Community
 
 ### 🌍 Community Channels
-- **GitHub Discussions**: [Ask questions and share ideas](https://github.com/your-username/farm-zero-ops/discussions)
-- **Discord Server**: [Join our AI Agriculture Community](discord-link)
+- **GitHub Discussions**: [Ask questions and share ideas](https://github.com/kennedy-kitoko/african-farm-intelligence-artificielle.git)
 - **WhatsApp Group**: [African Farmers AI Network](whatsapp-link)
+- **SITE** : [http://kennedy-kitoko-profil.netlify.app}(netlify-link)
 - **Telegram Channel**: [Farm Zero-Ops Updates](telegram-link)
 
 ### 📧 Contact
@@ -595,15 +604,7 @@ MIT License - Freedom to use, modify, and distribute
 ### Citation
 If you use Farm Zero-Ops in your research, please cite our work:
 
-#### BibTeX
-```bibtex
-@article{farm_zero_ops_2025,
-  title={Fine-tuning de Llama 3.1 8B pour l'Assistance Agricole en République Démocratique du Congo : Une Approche d'Adaptation de Domaine avec LoRA},
-  author={KITOKO MUYUNGA KENNEDY and Contributors},
 
-  year={2025},
-  url={https://https://github.com/kennedy-kitoko}
-}
 ```
 
 #### APA Format
@@ -639,7 +640,7 @@ GitHub repository. https://github.com/your-username/farm-zero-ops
 **Made with ❤️ in the Democratic Republic of Congo**  
 **For farmers across Africa 🌍**
 
-[![Follow on GitHub](https://img.shields.io/github/followers/your-username?style=social)](https://github.com/your-username)
-[![Twitter Follow](https://img.shields.io/twitter/follow/farm_zero_ops?style=social)](https://twitter.com/farm_zero_ops)
+[![Follow on GitHub](https://img.shields.io/github/followers/your-username?style=social)](https://github.com/kennedy-kitoko)
+[![Twitter Follow](https://img.shields.io/twitter/follow/farm_zero_ops?style=social)](@Kennedykitoko13)
 
 </div>
