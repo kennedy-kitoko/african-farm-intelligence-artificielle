@@ -94,9 +94,6 @@ https://colab.research.google.com/drive/1Ys44kVvmeZtnICzWz0xgpRnrIOjZAuxp?usp=sh
 git clone https://github.com/your-username/farm-zero-ops.git
 
 
-# Install dependencies
-pip install -r requirements.txt
-
 # Install Unsloth for 2x faster training
 pip install "unsloth[colab-new] @ git+https://github.com/unslothai/unsloth.git"
 
@@ -175,37 +172,7 @@ farm-zero-ops/
 ├── 📊 data/
 │   ├── rdc_agriculture_901.json        # Current RDC dataset
 │   ├── validation_set.json             # Test questions
-│   └── metadata/                       # Crop categories, regions
-├── 🧠 models/
-│   ├── llama-3.1-8b-base/             # Base model
-│   ├── llama-3.1-8b-agriculture-rdc/  # Fine-tuned model
-│   └── checkpoints/                    # Training checkpoints
-├── 📓 notebooks/
-│   ├── llama_3_1_finetune.ipynb       # Main training notebook
-│   ├── evaluation.ipynb               # Model evaluation
-│   └── data_analysis.ipynb            # Dataset analysis
-├── 🐍 src/
-│   ├── training/
-│   │   ├── train_llama.py             # Training script
-│   │   └── lora_config.py             # LoRA configuration
-│   ├── data/
-│   │   ├── preprocessing.py           # Data cleaning
-│   │   └── validation.py              # Quality checks
-│   └── inference/
-│       ├── api.py                     # FastAPI server
-│       └── chat_interface.py          # Chat interface
-├── 🚀 deployment/
-│   ├── Dockerfile                     # Container deployment
-│   ├── docker-compose.yml            # Multi-service setup
-│   └── kubernetes/                    # K8s manifests
-├── 🔬 evaluation/
-│   ├── benchmarks.py                  # Performance metrics
-│   ├── human_eval_results.json       # Expert evaluations
-│   └── comparative_analysis.py       # Model comparisons
-└── 📚 docs/
-    ├── research_paper.pdf             # Scientific publication
-    ├── training_guide.md              # Detailed training guide
-    └── deployment_guide.md            # Production deployment
+
 ```
 
 ---
@@ -422,39 +389,54 @@ Year 2:      1,000,000+ Q/R (continental knowledge)
 
 ### LoRA Configuration
 ```python
-# Optimized LoRA settings for agricultural domain
-lora_config = {
-    "r": 16,                    # Rank: balance between efficiency and performance
-    "target_modules": [
-        "q_proj", "k_proj", "v_proj", "o_proj",
-        "gate_proj", "up_proj", "down_proj"
-    ],
-    "lora_alpha": 16,           # Scaling parameter
-    "lora_dropout": 0.0,        # No dropout for faster training
-    "bias": "none",             # Optimized for efficiency
-    "use_gradient_checkpointing": "unsloth",
-    "random_state": 3407,
-    "use_rslora": False
-}
+model = FastLanguageModel.get_peft_model(
+    model,
+    r = 16, # Choose any number > 0 ! Suggested 8, 16, 32, 64, 128
+    target_modules = ["q_proj", "k_proj", "v_proj", "o_proj",
+                      "gate_proj", "up_proj", "down_proj",],
+    lora_alpha = 16,
+    lora_dropout = 0, # Supports any, but = 0 is optimized
+    bias = "none",    # Supports any, but = "none" is optimized
+    # [NEW] "unsloth" uses 30% less VRAM, fits 2x larger batch sizes!
+    use_gradient_checkpointing = "unsloth", # True or "unsloth" for very long context
+    random_state = 3407,
+    use_rslora = False,  # We support rank stabilized LoRA
+    loftq_config = None, # And LoftQ
+)
 ```
 
 ### Training Hyperparameters
 ```python
-training_args = {
-    "per_device_train_batch_size": 2,
-    "gradient_accumulation_steps": 4,
-    "effective_batch_size": 8,     # 2 × 4 × 1 GPU
-    "max_steps": 120,
-    "learning_rate": 2e-4,
-    "warmup_steps": 5,
-    "weight_decay": 0.01,
-    "lr_scheduler_type": "linear",
-    "optimizer": "adamw_8bit",     # Memory efficient
-    "fp16": True,                  # Mixed precision training
-    "logging_steps": 1,
-    "save_strategy": "steps",
-    "save_steps": 30
-}
+from trl import SFTTrainer
+from transformers import TrainingArguments
+from unsloth import is_bfloat16_supported
+
+trainer = SFTTrainer(
+    model = model,
+    tokenizer = tokenizer,
+    train_dataset = dataset,
+    dataset_text_field = "text",
+    max_seq_length = max_seq_length,
+    dataset_num_proc = 2,
+    packing = False, # Can make training 5x faster for short sequences.
+    args = TrainingArguments(
+        per_device_train_batch_size = 2,
+        gradient_accumulation_steps = 4,
+        warmup_steps = 5,
+        # num_train_epochs = 1, # Set this for 1 full training run.
+        max_steps = 120,
+        learning_rate = 2e-4,
+        fp16 = not is_bfloat16_supported(),
+        bf16 = is_bfloat16_supported(),
+        logging_steps = 1,
+        optim = "adamw_8bit",
+        weight_decay = 0.01,
+        lr_scheduler_type = "linear",
+        seed = 3407,
+        output_dir = "outputs",
+        report_to = "none", # Use this for WandB etc
+    ),
+)
 ```
 
 ### Deployment Options
@@ -462,40 +444,24 @@ training_args = {
 #### 1. GGUF Export (Recommended)
 ```python
 # Export to GGUF for Ollama/LM Studio
-model.save_pretrained_gguf(
-    "farm-zero-ops-gguf",
-    tokenizer,
-    quantization_method="q4_k_m"  # 4-bit quantization
-)
+import subprocess, os
+
+# 1) fusion
+model.save_pretrained_merged("farm-zo-f16", tokenizer, save_method="merged_16bit")
+
+# 2) compile llama.cpp si besoin
+if not os.path.exists("llama.cpp/convert_hf_to_gguf.py"):
+    subprocess.run("git clone --recursive https://github.com/ggerganov/llama.cpp", shell=True)
+    subprocess.run("cd llama.cpp && make clean && make all -j", shell=True)
+
+# 3) convert
+subprocess.run(
+    "cd llama.cpp && python convert_hf_to_gguf.py ../farm-zo-f16 "
+    "--outfile ../farm-zo-q4.gguf --outtype q4_k_m", shell=True)
+
+print("✅ farm-zo-q4.gguf prêt !")
 ```
 
-#### 2. API Server
-```python
-# FastAPI server for OpenAI-compatible API
-from fastapi import FastAPI
-from farm_zero_ops import FarmAssistant
-
-app = FastAPI(title="Farm Zero-Ops API")
-assistant = FarmAssistant.from_pretrained("./models/")
-
-@app.post("/v1/chat/completions")
-async def chat_completions(request: ChatRequest):
-    return await assistant.generate_response(request)
-```
-
-#### 3. Mobile Integration
-```javascript
-// React Native integration example
-import { FarmZeroOps } from 'farm-zero-ops-mobile';
-
-const assistant = new FarmZeroOps({
-  modelPath: './assets/farm-zero-ops.gguf',
-  language: 'fr'
-});
-
-const response = await assistant.ask(
-  "Comment augmenter le rendement du maïs en saison sèche ?"
-);
 ```
 
 ---
@@ -550,13 +516,13 @@ All contributors will be:
 
 ### Agricultural Impact (Projected)
 - **Farmer Reach**: 1M+ farmers by 2030
-- **Economic Benefit**: $17,500 saved per farmer (vs cloud solutions)
+- **Economic Benefit**: $$$$$ saved per farmer (vs cloud solutions)
 - **Yield Improvement**: 30% average increase through AI optimization
 - **Loss Reduction**: 50% decrease in post-harvest losses
 - **Knowledge Democratization**: Expert agricultural advice available offline
 
 ### Example Success Scenario
-> **Farmer Jean-Baptiste**, Kasaï Province, RDC:
+> **Farmer devos kitoko **, Kasaï Province, RDC:
 > 
 > *"Using Farm Zero-Ops on my tablet, I learned about cassava mosaic disease early identification and natural treatment methods. The AI suggested neem oil application and resistant varieties. This season, I reduced crop loss from 40% to 10%, increasing my income by $800. Most importantly, I now have an agricultural expert available 24/7 in my local language."*
 
@@ -569,7 +535,7 @@ All contributors will be:
 - **Training Data**: 901 RDC Q/R pairs
 - **Languages**: French
 - **Performance**: 72% loss reduction, 8.8/10 agricultural accuracy
-- **Release Date**: January 2025
+- **Release Date**: 10 /septembre 2025
 
 ### Planned Releases
 
@@ -610,13 +576,6 @@ All contributors will be:
 - **Technical Support**: support@farm-zero-ops.org
 - **Media & Press**: media@farm-zero-ops.org
 
-### 🆘 Getting Help
-1. **Check Documentation**: Start with our [comprehensive guides](docs/)
-2. **Search Issues**: Look for similar problems in [GitHub Issues](issues)
-3. **Ask Community**: Post in [GitHub Discussions](discussions)
-4. **Report Bugs**: Create detailed [bug reports](issues/new?template=bug_report)
-5. **Request Features**: Submit [feature requests](issues/new?template=feature_request)
-
 ---
 
 ## 📜 License & Citation
@@ -640,16 +599,16 @@ If you use Farm Zero-Ops in your research, please cite our work:
 ```bibtex
 @article{farm_zero_ops_2025,
   title={Fine-tuning de Llama 3.1 8B pour l'Assistance Agricole en République Démocratique du Congo : Une Approche d'Adaptation de Domaine avec LoRA},
-  author={[Your Name] and Contributors},
-  journal={arXiv preprint},
+  author={KITOKO MUYUNGA KENNEDY and Contributors},
+
   year={2025},
-  url={https://github.com/your-username/farm-zero-ops}
+  url={https://https://github.com/kennedy-kitoko}
 }
 ```
 
 #### APA Format
 ```
-[Your Name] et al. (2025). Farm Zero-Ops: Revolutionary Agricultural AI for Tropical Africa. 
+KITOKO MUYUNGA KENNEDY et al. (2025). Farm Zero-Ops: Revolutionary Agricultural AI for Tropical Africa. 
 GitHub repository. https://github.com/your-username/farm-zero-ops
 ```
 
