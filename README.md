@@ -38,8 +38,10 @@ L’objectif principal de cette étude est de développer et d’adapter un Gran
 
 This repository contains the fine-tuning of Llama 3.1 (8B) using Unsloth on a custom agricultural dataset from the Democratic Republic of Congo (DRC). The objective is to build an agricultural expert assistant (AGRO-IA) like CHAT-GPT capable of answering farmers’ questions about crops, pests, soil management, irrigation, and sustainable practices.
 
-### dataset
-L'ensemble de données d'entrainement a été construit par Kimi, DeepSeek, Claude, Grok, chatgpt, gwen &amp; Co qui récoltent Internet pour forger et récupérer des informations afin de former un ensemble de données de terrain agricole congolais #AgroAI #FarmZeroOps. 
+### Dataset
+L’ensemble de données d’entraînement a été construit à partir des ressources collectées par Kimi, DeepSeek, Claude, Grok, ChatGPT, Gwen & Co, qui exploitent Internet pour extraire et agréger des informations. Ces données ont ensuite été structurées afin de constituer un corpus agricole congolais pertinent pour l’adaptation du modèle.
+
+👉 Ce dataset constitue la base du projet #AgroAI #FarmZeroOps, en fournissant un socle de connaissances spécialisées sur les pratiques agricoles congolaises 
 
 
 
