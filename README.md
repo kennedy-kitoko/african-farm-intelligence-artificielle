@@ -1,4 +1,4 @@
-# 🌿🤖 AGRO-IA OS: Agricultural AI for Africa
+# 🌿🤖    AGRO-IA OS: Agricultural AI for Africa
 
 <div align="center">
 
@@ -19,7 +19,7 @@
 
 ---
 
-## 🎯 Mission: Autonomous Agricultural Intelligence for Africa
+## 🎯       Mission: Autonomous Agricultural Intelligence for Africa
 
 ### Résumé
 Cette étude présente le fine-tuning spécialisé d’un Grand Modèle de Langage (comme ChatGPT) pour l’assistance agricole en République Démocratique du Congo (RDC). En utilisant la technique Low-Rank Adaptation (LoRA) via Unsloth sur Google Colab, nous avons adapté le modèle avec un dataset de 901 paires question-réponse en français, couvrant les données et pratiques agricoles spécifiques à la RDC.
