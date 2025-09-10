@@ -484,9 +484,7 @@ subprocess.run(
 print("✅ farm-zo-q4.gguf prêt !")
 ```
 
-```
 
----
 
 ## 🤝 Contributing
 
