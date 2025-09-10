@@ -22,18 +22,19 @@
 ## 🎯 Mission: Autonomous Agricultural Intelligence for Africa
 
 ### Résumé
-Cette étude présente le fine-tuning spécialisé du Grand Modèle de Langage (comme chatgpt) pour l'assistance agricole en République Démocratique du Congo (RDC). Utilisant la technique Low-Rank Adaptation (LoRA) via Unsloth sur Google Colab, nous avons adapté le modèle avec un dataset de 901 paires question-réponse en français, couvrant les pratiques agricoles tropicales. Les résultats montrent une convergence efficace en 120 étapes d'entraînement, démontrant l'efficacité de l'adaptation de domaine pour les applications agricoles spécialisées.
+    Cette étude présente le fine-tuning spécialisé d’un Grand Modèle de Langage (comme ChatGPT) pour l’assistance agricole en République Démocratique du Congo (RDC). En utilisant la technique Low-Rank Adaptation (LoRA) via Unsloth sur Google Colab, nous avons adapté le modèle avec un dataset de 901 paires question-réponse en français, couvrant les données et pratiques agricoles spécifiques à la RDC.
+
+Les résultats montrent une convergence efficace en 120 étapes d’entraînement, démontrant la pertinence de l’adaptation au domaine pour les applications agricoles spécialisées.
 
 ### Mots-clés : Fine-tuning , Agriculture tropicale, LoRA, Adaptation de domaine, RDC
 
 ### 1. Introduction
 1.1 Contexte et Motivation
-L'agriculture en République Démocratique du Congo représente 40% du PIB et emploie 70% de la population active. Cependant, l'accès à l'expertise agricole reste limité, particulièrement dans les zones rurales. Les modèles de langage large (LLM) offrent une opportunité unique de démocratiser l'accès aux connaissances agricoles spécialisées.
+L’agriculture en République Démocratique du Congo (RDC) représente environ 40 % du PIB et emploie près de 70 % de la population active. Pourtant, l’accès à l’expertise agricole demeure limité, en particulier dans les zones rurales.
+Les Grands Modèles de Langage (LLM) offrent une opportunité unique de démocratiser l’accès aux connaissances agricoles spécialisées, en rendant disponibles des conseils et des recommandations adaptés aux réalités locales.
 
-1.2 Objectifs de l'Étude
-Adapter Llama 3.1 8B aux spécificités de l'agriculture tropicale congolaise
-Évaluer l'efficacité du fine-tuning LoRA sur un dataset agricole spécialisé
-Analyser la courbe d'apprentissage et la convergence du modèle
+1.2 Objectifs de l’Étude
+L’objectif principal de cette étude est de développer et d’adapter un Grand Modèle de Langage (LLM) afin de répondre aux besoins spécifiques de l’agriculture en République Démocratique du Congo.
 
 This repository contains the fine-tuning of Llama 3.1 (8B) using Unsloth on a custom agricultural dataset from the Democratic Republic of Congo (DRC). The objective is to build an agricultural expert assistant (AGRO-IA) like CHAT-GPT capable of answering farmers’ questions about crops, pests, soil management, irrigation, and sustainable practices.
 
@@ -41,7 +42,6 @@ This repository contains the fine-tuning of Llama 3.1 (8B) using Unsloth on a cu
 L'ensemble de données d'entrainement a été construit par Kimi, DeepSeek, Claude, Grok, chatgpt, gwen &amp; Co qui récoltent Internet pour forger et récupérer des informations afin de former un ensemble de données de terrain agricole congolais #AgroAI #FarmZeroOps. 
 
 
-Farm Zero-Ops revolutionizes tropical agriculture through **decentralized AI**, eliminating dependency on cloud services and expensive subscriptions. Our mission: equip every African farmer with world-class agricultural expertise, locally deployed and culturally adapted.
 
 ### 🏆 Key Achievements
 - ✅ **72% loss reduction** in 9 minutes training (Llama 3.1 8B)
