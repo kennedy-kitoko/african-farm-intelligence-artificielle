@@ -12,6 +12,7 @@
 **Zero Cloud • Zero Subscription • Maximum Farmer Autonomy**
 
 **kitoko muyunga kennedy**
+**10 September 2025**
 
 [📊 Research Paper](#research-paper) • [🚀 Quick Start](#quick-start) • [📱 Demo](#demo) • [🤝 Contributing](#contributing)
 
