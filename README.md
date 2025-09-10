@@ -85,14 +85,14 @@ graph TD
 ### Option 1: Google Colab (Recommended for Beginners)
 ```bash
 # Open in Colab
-https://colab.research.google.com/github/your-username/farm-zero-ops/blob/main/notebooks/llama_3_1_finetune.ipynb
+https://colab.research.google.com/drive/1Ys44kVvmeZtnICzWz0xgpRnrIOjZAuxp?usp=sharing
 ```
 
 ### Option 2: Local Setup
 ```bash
 # Clone repository
 git clone https://github.com/your-username/farm-zero-ops.git
-cd farm-zero-ops
+
 
 # Install dependencies
 pip install -r requirements.txt
@@ -101,13 +101,13 @@ pip install -r requirements.txt
 pip install "unsloth[colab-new] @ git+https://github.com/unslothai/unsloth.git"
 
 # Run training
-python train_llama_3_1.py --dataset data/rdc_agriculture_901.json
+python train_llama_3_1.py
+rdc_agriculture_901.json
 ```
 
 ### Option 3: Docker Deployment
 ```bash
-docker build -t farm-zero-ops .
-docker run --gpus all -p 8000:8000 farm-zero-ops
+docker pull unsloth/unsloth:latest
 ```
 
 ---
