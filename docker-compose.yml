@@ -1,0 +1,42 @@
+services:
+  api:
+    build: ./services/api
+    container_name: agro_api
+    ports:
+      - "${API_PORT}:8000"
+    depends_on:
+      - kwdb
+    environment:
+      - KWDB_USER=${KWDB_USER}
+      - KWDB_PASSWORD=${KWDB_PASSWORD}
+      - KWDB_DATABASE=${KWDB_DATABASE}
+      - KWDB_HOST=kwdb
+      - KWDB_PORT=${KWDB_PORT}
+    models:
+      - llm
+    networks:
+      - agro_net   # <-- réseau personnalisé
+
+  kwdb:
+    image: kwdb/kwdb:2.2.2
+    container_name: agro_kwdb
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=${KWDB_PASSWORD}
+      - MYSQL_DATABASE=${KWDB_DATABASE}
+    ports:
+      - "${KWDB_PORT}:3306"
+    volumes:
+      - ./volumes/kwdb:/var/lib/mysql
+      - ./services/kwdb/init:/docker-entrypoint-initdb.d
+    networks:
+      - agro_net   # <-- réseau personnalisé
+
+models:
+  llm:
+    model: ai/gemma3:latest
+
+# Déclaration explicite du réseau
+networks:
+  agro_net:
+    driver: bridge
